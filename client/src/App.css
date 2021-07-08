@@ -36,3 +36,50 @@
     transform: rotate(360deg);
   }
 }
+
+.fixed-right-bottom {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 1030;
+  margin: 0 1.5rem 1.5rem 0;
+  border-radius: 50%;
+}
+
+.icon-user{
+  color : whitesmoke;
+  opacity: 75%;
+}
+  
+
+.filter-button{
+  margin : 1%;
+  width: 100%;
+  text-align: left;
+  border-radius: 2%; 
+  box-shadow: none!important;
+  outline: 0;
+}
+
+.filter-divider{
+  margin: 0;
+  visibility: hidden;
+}
+
+.important{
+  color: red;
+}
+
+.login-credentials{
+  padding-top: 5%;
+}
+
+.welcome-msg{
+  padding: 2%;
+  margin-top: 8%;
+
+  background-color: whitesmoke;
+
+}
+
+
