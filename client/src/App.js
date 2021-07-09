@@ -37,9 +37,10 @@ function App() {
           userInfo : userInfo, setUserInfo : setUserInfo}}>
 
         
-
-        <MemeBody doLogout = {doLogout}/>
-
+        
+          <MemeBody doLogout = {doLogout}/>
+        
+        
         </UserContext.Provider>
       </Router>
   );

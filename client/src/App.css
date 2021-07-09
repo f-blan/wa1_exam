@@ -43,7 +43,7 @@
   bottom: 0;
   z-index: 1030;
   margin: 0 1.5rem 1.5rem 0;
-  border-radius: 50%;
+  
 }
 
 .icon-user{
@@ -82,4 +82,29 @@
 
 }
 
+.meme-image{
+  display : block;
+  margin-left: auto;
+  margin-right: auto;
+  
+  
+}
 
+.font-Times{
+  font-family: "Times New Roman", Times, serif;
+
+}
+
+.font-Helvetica{
+  font-family: Arial, Helvetica, sans-serif;
+
+}
+
+.text-white{
+  background-color: black;
+  color : white;
+}
+.text-black{
+  background-color: white;
+  color : black;
+}

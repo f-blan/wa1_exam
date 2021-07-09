@@ -1,5 +1,5 @@
 import React from 'react';
-import {Col,Row, Navbar, Form, Button,Dropdown} from 'react-bootstrap';
+import {Col,Row, Navbar, Form, Button,Dropdown, Container} from 'react-bootstrap';
 import { EmojiWink, PersonCircle } from 'react-bootstrap-icons';
 import {BrowserRouter as Router, Route, Switch, Link, Redirect} from 'react-router-dom';
 import Meme from './MemeComponents.js';
@@ -16,6 +16,7 @@ function MemeBody(props){
   
     return(
         <>
+          <Container fluid>
             <MemeNav logout = {props.doLogout}/>
             <Row>
             <MemeSide selected = {selected} setSelected = {setSelected}/>
@@ -26,6 +27,7 @@ function MemeBody(props){
   
             </Switch>
             </Row>
+          </Container>
         </>
     );
 }
