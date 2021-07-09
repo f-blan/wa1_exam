@@ -1,14 +1,14 @@
 import {useState, useContext} from 'react' ;
 import API from './API.js';
-import { Form, Button, Alert, Row, Container, Col, Modal} from 'react-bootstrap';
+import { Form, Button, Alert, Row, Container, Col} from 'react-bootstrap';
 import {UserContext} from './Contexts.js';
 
 function LoginBody(props){
-    const user = useContext(UserContext);
+    const userC = useContext(UserContext);
     const [message, setMessage] = useState("");
-    const setUserInfo = user.setUserInfo;
-    const setLoggedIn = user.setLoggedIn;
-    const [email, setEmail] = useState("");
+    const setUserInfo = userC.setUserInfo;
+    const setLoggedIn = userC.setLoggedIn;
+    const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
 
     const doLogIn = (username, password) =>{
@@ -28,21 +28,19 @@ function LoginBody(props){
 
         let valid = 0;
 
-        if(!email.includes("@") || !email.includes(".")){
-            valid = 2;
-        }
-        if(email === "" || password === ""){
+        
+        if(userName === "" || password === ""){
             valid = 1;
         }        
 
         
 
         if(valid===0){
-            doLogIn(email, password);
+            doLogIn(userName, password);
         }else if(valid===1){
-            setMessage("Empty email or password");
+            setMessage("Empty username or password");
         }else{
-            setMessage("Please insert a valid email (ex: salvo@domain.asd)");
+            setMessage("Please insert a valid credential");
         }
         
     }
@@ -63,8 +61,8 @@ function LoginBody(props){
             </Form.Row>
             {message ? <Alert variant='danger'>{message}</Alert> : ''}
             <Form.Group controlId='username'>
-                <Form.Label>email</Form.Label>
-                <Form.Control type='email' value={email} onChange={ev => setEmail(ev.target.value)} />
+                <Form.Label>username</Form.Label>
+                <Form.Control type='userName' value={userName} onChange={ev => setUserName(ev.target.value)} />
             </Form.Group>
             <Form.Group controlId='password'>
                 <Form.Label>Password</Form.Label>

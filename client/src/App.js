@@ -36,10 +36,11 @@ function App() {
         <UserContext.Provider value = {{loggedIn : loggedIn, setLoggedIn : setLoggedIn, 
           userInfo : userInfo, setUserInfo : setUserInfo}}>
 
+      <>{loading ? <h1> loading the page </h1> 
+      :
         
-        
-          <MemeBody doLogout = {doLogout}/>
-        
+      <MemeBody doLogout = {doLogout}/>
+      }</>  
         
         </UserContext.Provider>
       </Router>

@@ -1,16 +1,14 @@
 import React from 'react';
 import {Col,Row, Navbar, Form, Button,Dropdown, Container} from 'react-bootstrap';
 import { EmojiWink, PersonCircle } from 'react-bootstrap-icons';
-import {BrowserRouter as Router, Route, Switch, Link, Redirect} from 'react-router-dom';
+import { Route, Switch, Link, Redirect} from 'react-router-dom';
 import Meme from './MemeComponents.js';
 import {UserContext} from './Contexts.js';
-import {useContext, useState, useEffect} from 'react' ;
+import {useContext, useState} from 'react' ;
 import {LoginBody} from './LoginComponent.js'
 
 function MemeBody(props){
-    const user = useContext(UserContext);
-    const loggedIn = user.loggedIn;
-    const userInfo = user.userInfo;
+    
 
     let [selected, setSelected] = useState("Memes");
   
@@ -34,7 +32,7 @@ function MemeBody(props){
 
 function MemeNav(props){
     const meme_icon = <EmojiWink size = {25}/> ;
-    const user_icon = <Link to = '/login'><PersonCircle size = {30} onClick = {props.logout} className = "icon-user"/></Link>;
+    const user_icon = <Link to = '/'><PersonCircle size = {30} onClick = {props.logout} className = "icon-user"/></Link>;
   
     const user = useContext(UserContext);
     return(
@@ -54,7 +52,7 @@ function MemeNav(props){
   
                 {user.loggedIn ? 
                 <Col xs = {{ span: 2, offset: 0 }} variant = "dark">
-                  Welcome, {user.userInfo.name}!
+                  <span className = "welcome-msg">Welcome, {user.userInfo.username}!</span>
                 </Col>
                 : 
                 <Col xs = {{ span: 2, offset: 0 }} variant = "dark">
@@ -94,10 +92,11 @@ function MemeSide(props){
             <>{user.loggedIn ?
             <>
                 <SideRow selected = {selected} linkTo = {my_path} name = "My memes" setSelected = {props.setSelected}/>
-                <SideRow selected = {selected} linkTo = {my_path} name = "Create a meme" setSelected = {props.setSelected}/>
+                <SideRow selected = {selected} linkTo = {my_path} name = "Create a meme" setSelected = {props.setSelected}/>                
             </>
             :
             <> 
+                <SideRow selected = {selected} linkTo = "/login" name = "Login" setSelected = {props.setSelected}/>
             </>}
             </>
             
@@ -132,7 +131,7 @@ function SideRow(props){
 }
 
 function MainRoutes(props){
-    
+  const user = useContext(UserContext);
     return(
       <>
         <Col xs = {12} md={7} className="tasks">
@@ -178,7 +177,8 @@ function MainRoutes(props){
 
                 
         <Route path="/login"  render={()=>
-          <LoginBody/> 
+          <>{user.loggedIn ? <Redirect to ="/" /> : <LoginBody/>}</>
+        
         }/>
 
         <Route exact path="/"  render={()=>

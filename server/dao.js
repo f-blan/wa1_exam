@@ -10,8 +10,8 @@ const db = new sqlite.Database('memes.db', (err) => {
 });
 
 //fetch the largest Id for table memes (done at server boot only)
-let lastID;
-const getlastID = () => {
+exports.getlastID = () => {
+  
   return new Promise((resolve, reject) => {
     const sql = 'SELECT max(id) as lastID from MEMES';
     db.get(sql, [], (err, row) => {
@@ -19,15 +19,16 @@ const getlastID = () => {
         reject(err);
         undefined;
       }
-      if (row == undefined) {
-        lastID = 0;
+      
+      if (row.length === 0 || row === undefined) {
+        resolve(0);
       }else{
-        lastID = row.lastID;
+        resolve(row.lastID);
       }
     });
   });
 }
-getlastID().then().catch();
+
 
 
 //return list of memes
@@ -69,7 +70,7 @@ exports.CreatorMemes = (loggedIn, c_id) => {
           reject(err);
           return;
         }
-        if(row === undefined){
+        if(rows.length === 0){
             reject({error: "Creator doesn't exist or has nothing to show you"});
         }
         const memes = rows.map((e) => ({
@@ -102,15 +103,14 @@ exports.CreatorsList = () => {
 exports.MemeStore = (meme) => {
     return new Promise((resolve, reject) => {
       const sql = 
-      `INSERT INTO MEMES(id, title, imageId, visibility, font, color, c_name, c_id) 
-      VALUES(?, ?, ?, ?, ?, ?, ?, ?)`;
-      db.run(sql, [lastID+1, meme.title, meme.imageId, meme.visibility, meme.font, meme.color, meme.c_name, c_id], 
+      `INSERT INTO MEMES( title, imageId, visibility, font, color, c_name, c_id) 
+      VALUES( ?, ?, ?, ?, ?, ?, ?)`;
+      db.run(sql, [ meme.title, meme.imageId, meme.visibility, meme.font, meme.color, meme.c_name, meme.c_id], 
           function (err) {
         if (err) {
           reject(err);
           return;
         }
-        lastID++;
         resolve(this.lastID);
       });
     });
@@ -118,7 +118,7 @@ exports.MemeStore = (meme) => {
 
 //store a field of a meme
 exports.FieldStore = (memeId, fieldId, field) => {
-    return new Promise((resolve, reject) => {
+      return new Promise((resolve, reject) => {
       const sql = 
       `INSERT INTO TEXTFIELDS(meme_id, field_id, field) 
       VALUES(?, ?, ?)`;
@@ -128,7 +128,6 @@ exports.FieldStore = (memeId, fieldId, field) => {
           reject(err);
           return;
         }
-        lastID++;
         resolve(true);
       });
     });
@@ -138,7 +137,7 @@ exports.FieldStore = (memeId, fieldId, field) => {
 exports.deleteMeme = (memeId, loggedUserId) => {
   return new Promise((resolve, reject) => {
     const sql = 'DELETE FROM MEMES WHERE id = ? and c_id = ?';
-    db.run(sql, [id, loggedUserId], (err) => {
+    db.run(sql, [memeId, loggedUserId], (err) => {
       if (err) {
         reject(err);
         return;

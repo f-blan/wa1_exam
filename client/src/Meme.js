@@ -24,10 +24,10 @@ function Image(id, name,location,width, n_fields, max_lengths, positionings, w_s
     
   }
 
-  function MemeClass(id, title, image, fields, visibility, font, color,  c_name, c_id) {
+  function MemeClass(id, title, imageId, fields, visibility, font, color,  c_name, c_id) {
     this.id = id;
     this.title = title;
-    this.image = image;
+    this.imageId = imageId;
     this.fields = fields;
     this.font = font;
     this.color = color;
@@ -52,23 +52,23 @@ function Image(id, name,location,width, n_fields, max_lengths, positionings, w_s
 
     const pos_anakin = [{top : "-46%", left: "-12.5%", desc : "top left"}, {top : "-50%", left: "12.5%", desc : "top right"}, 
             {top : "-15%", left: "12.5%", desc : "bottom right"}];
-    defaults.push(new Image(1, "For the Better, Right?", anakin,"50%", 3, 48, pos_anakin, "40%"));
+    defaults.push(new Image(0, "For the Better, Right?", anakin,"50%", 3, 48, pos_anakin, "40%"));
     
     const pos_cat = [{top : "-73%", left : "-17.5%", desc : "Woman text"}, {top : "-77%", left: "17.5%", desc : "Cat text"}];
-    defaults.push(new Image(2, "Woman Yelling at a Cat", cat,"75%", 2, 60, pos_cat, "35%"));
+    defaults.push(new Image(1, "Woman Yelling at a Cat", cat,"75%", 2, 60, pos_cat, "35%"));
 
     const pos_drake = [{top : "-65%", left: "15%", desc : "top right"}, {top : "-28%", left: "15%", desc : "bottom right"}]
-    defaults.push(new Image(3, "Drake", drake,"75%", 2, 100, pos_drake, "35%"));
+    defaults.push(new Image(2, "Drake", drake,"75%", 2, 100, pos_drake, "35%"));
 
     const pos_disappointed = [{top : "-70%", left: "-20%", desc : "top left"},{top : "-25%", left: "-20%", desc : "bottom left"}]
-    defaults.push(new Image(4, "Disappointed Black Guy", blackGuy,"75%", 2, 100, pos_disappointed, "35%"));
+    defaults.push(new Image(3, "Disappointed Black Guy", blackGuy,"75%", 2, 100, pos_disappointed, "35%"));
     
     const pos_boys = [{top : "-81%", left: "0%", desc : "top"}]
-    defaults.push(new Image(5, "Me and the Boys", theBoys, "80%", 1, 100, pos_boys, "15%"));
+    defaults.push(new Image(4, "Me and the Boys", theBoys, "80%", 1, 100, pos_boys, "15%"));
 
     const pos_struggle = [{top : "-67%", left: "-11%", desc : "button left"}, {top : "-76%", left: "4%", desc : "button right"},
             {top : "-25%", left: "0%", desc : "bottom text"}];
-    defaults.push(new Image(6, "Daily Struggle", buttons, "50%", 3, 40, pos_struggle, "45%"));
+    defaults.push(new Image(5, "Daily Struggle", buttons, "50%", 3, 40, pos_struggle, "45%"));
 
     const pos_vegeta = [{top : "-60%", left: "-20%", desc : "Quote"}];
     defaults.push(new Image(6, "Vegeta quote", vegeta, "75%", 1, 50, pos_vegeta, "39%"));
@@ -106,7 +106,7 @@ function Image(id, name,location,width, n_fields, max_lengths, positionings, w_s
     let fields7 = ["quando asd asd asd sad das sad das sad sa sa sa sa sad dss da sd s ad  s ad sadsadsads ad sa d sadsad sada dsa wodjsof oasihf io oawifb sa pifhsa pfh fpsaohf pksah dophfdk pah"];
     let meme7 = new MemeClass(7, "tutke6", images[6], fields7, 0,1,1,"sad",1);
 
-
+    const memearray = [meme1, meme2,meme3,meme4,meme5,meme6,meme7]
 //
 
-  export {Image, MemeClass, DefaultImages, ImagesData};
+  export {Image, MemeClass, DefaultImages, ImagesData, memearray};

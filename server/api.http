@@ -1,0 +1,48 @@
+
+DELETE http://localhost:3001/api/logout
+
+###
+
+GET http://localhost:3001/api/session
+
+###
+
+
+GET http://localhost:3001/api/retrieveMeme/24
+
+###
+
+GET http://localhost:3001/api/creators
+
+###
+
+GET http://localhost:3001/api/memes
+
+###
+
+GET http://localhost:3001/api/memes/24
+
+###
+
+GET http://localhost:3001/api/creators
+
+###
+
+POST http://localhost:3001/api/addMeme
+Content-Type: application/json
+
+{ "title" : "Api Test", "imageId" : 1, "visibility" : 1, "font" : 1, "color" : 1, "fields" : ["API test left", "Api test right"] }
+
+###
+
+DELETE  http://localhost:3001/api/deleteMeme/25
+
+###
+
+
+POST http://localhost:3001/api/login
+Content-Type: application/json
+
+{ "username" : "PeppePazzo", "password" : "asd" }
+
+###

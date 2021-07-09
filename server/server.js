@@ -144,16 +144,19 @@ app.post('/api/addMeme', isLoggedIn, async (req, res) => {
   const c_id = req.user.id;
   const fields = req.body.fields;
   try {
+      
       let id = await dao.MemeStore({ title: title, imageId: imageId, 
           visibility : visibility, font: font, color: color, c_name: c_name, c_id : c_id});
       let fieldPromises = [];
       
       fields.forEach((f, i) => fieldPromises.push(dao.FieldStore(id,i,f)));
-
-      await fieldPromises.all();
+      await Promise.all(fieldPromises);
+      
+      
 
       res.json(id);
   } catch (error) {
+      console.log(error);
       res.status(500).json(error);
   }
 });
@@ -168,12 +171,13 @@ app.delete('/api/deleteMeme/:id', isLoggedIn, async (req, res) => {
       
       res.end();
   } catch (error) {
+      console.log(error);
       res.status(500).json(error);
   }
 
 });
 
-app.get('/api/retrieveMeme/:id', isLoggedIn,async (req, res) => {
+app.get('/api/retrieveMeme/:id', async (req, res) => {
   const id = req.params.id;
   try {
       let meme = await dao.getMeme(id, req.isAuthenticated());

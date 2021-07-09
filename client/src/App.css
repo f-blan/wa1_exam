@@ -45,7 +45,10 @@
   margin: 0 1.5rem 1.5rem 0;
   
 }
-
+.memehead{
+  font-size: 150%;
+  margin: 1rem
+}
 .icon-user{
   color : whitesmoke;
   opacity: 75%;
@@ -80,6 +83,10 @@
 
   background-color: whitesmoke;
 
+}
+
+.memerows{
+  padding-top: 1rem;
 }
 
 .meme-image{

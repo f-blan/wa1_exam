@@ -1,15 +1,75 @@
-
-import {Col,Row, Figure, Image, Button} from 'react-bootstrap';
-import {useState} from 'react' ;
-import {ImagesData,MemeClass} from './Meme.js';
+import { PersonSquare } from 'react-bootstrap-icons';
+import {Col,Row, Figure, Image, Button, Dropdown} from 'react-bootstrap';
+import {useState, useEffect} from 'react' ;
+import {ImagesData} from './Meme.js';
+import API from './API.js';
+import {  Link} from 'react-router-dom';
 
 const images = ImagesData;
+const fonts = ['Arial, Helvetica, sans-serif', '"Times New Roman", Times, Serif', ];
 
 function MemeList(props){
-    return(
-        <>
-        </>
-    );
+    let [memes, setMemes] = useState([]);
+
+    let [loading, setLoading] = useState(true);
+
+    //fetch the memes (visibility handled on serverside)
+    useEffect(() => {
+        API.MainLoadMemes().then(memelist => {
+          setMemes(memelist);
+          setLoading(false);
+        }).catch(err =>{
+          setLoading(false);
+        });
+      },[]);
+
+      if(loading){
+        return(
+          <>
+          
+            <h1>Please wait for loading of the memes...</h1>
+          
+          </>
+        );
+      }else{
+        
+      
+        return(
+            <>
+            
+            <h1 className = "memehead"><strong>List of all memes </strong></h1>
+            
+            <Row>
+                <Col xs = {{ span: 2, offset: 0 }}>
+                    <strong>Title</strong>
+                </Col>
+                <Col xs = {{span: 1, offset: 0}}>
+                    <strong>Creator</strong>
+                </Col>
+                <Col xs = {{span: 1, offset: 0}}>
+
+                </Col>
+                <Col xs = {{ span: 3, offset: 0 }}>
+                    <strong>Image</strong>
+                </Col>
+                <Col xs = {{span: 4, offset : 0}}>
+                    <strong>Font</strong>
+                </Col>
+
+                <Col xs ={{span: 1, offset : 0}} >
+                    <strong>Visibility</strong>
+                </Col>
+
+            </Row>
+            <Dropdown.Divider/>
+            {
+              memes.map((m) => <MemeRow meme = {m} key ={m.id} />)
+            }
+        
+            </>
+    
+        );
+      }
 
 }
 
@@ -22,34 +82,36 @@ function CreatorsList(props){
 }
 
 function MemePage(props){
-    let fields1 = ["hi", "hey", "fuck you maderglabberaaaaaaaaa"];
-    let meme1 = new MemeClass(1, "Title", images[0], fields1, 0, 1, 0, 1, "aasd" );
+    
+    let [meme, setMeme] = useState();
 
-    let fields2 = ["the woman", "me myselfaaaaa asd asd asd asd asd asd asd asd asd sd asd asd "]
-    let meme2 = new MemeClass(2, "Title2", images[1], fields2,0,1,1, 1, "asd");
+    let [loading, setLoading] = useState(true);
 
-    let fields3 = ["me being happy, very very happy asd asd asd asd asd asd asd asd asd asd ", 
-    "no being happy, not very happy asd asd asd asd asd as dads asd asd "];
-    let meme3 = new MemeClass(3, "Title3", images[2], fields3, 0, 0, 1,"asd",1);
+    //fetch the memes (visibility handled on serverside)
+    useEffect(() => {
+        console.log("hello");
+        API.RetrieveMeme(props.id).then(memeret => {
+          setMeme(memeret);
+          setLoading(false);
+        }).catch(err =>{
+          setLoading(false);
+        });
+      },[]);
 
-    let fields4 = ["when asd asd asd asd asd asd asd asd asd asdd", "asda asd asd asd asd asd sad sad asd "];
-    let meme4 = new MemeClass(4,"Title4", images[3], fields4, 0, 1,1, "asd",1  );
-
-    let fields5 = ["me and the boys copying code from biglab2 sad asd asd asd asd sda asd dsa sad asd sad asd "];
-    let meme5 = new MemeClass(5, "Title5", images[4], fields5, 0, 0, 1, "asd", 2);
-
-    let fields6 = ["panino con la carne di cavallo asdas asd", "panino con la salsiccia asd asd asd ", "Peppino l'arrostitore tenebroso"];
-    let meme6 = new MemeClass(6, "Title6", images[5], fields6, 0, 1, 3,"asd",1);
-
-    let fields7 = ["quando asd asd asd sad das sad das sad sa sa sa sa sad dss da sd s ad  s ad sadsadsads ad sa d sadsad sada dsa wodjsof oasihf io oawifb sa pifhsa pfh fpsaohf pksah dophfdk pah"];
-    let meme7 = new MemeClass(7, "tutke6", images[6], fields7, 0,1,1,"sad",1);
-    return(
-        <>
-            <h1>{meme4.title}</h1>
-            <MemeComponent item = {meme7}/>
-        </>
-    );
-
+    if(loading === true){
+        return(
+            <>
+                <h1> loading the page </h1>
+            </>
+        );
+    }else{
+        return(
+            <>
+                <h1><strong>{meme.title}</strong> by <strong>{meme.c_name}</strong></h1>
+                <MemeComponent item = {meme}/>
+            </>
+        );
+    }
 }
 
 
@@ -69,9 +131,9 @@ function ImageList(props){
     
     return(
         <>
-        <Col xs = {12} md={7} className="tasks">
+        
             <h1>Please wait for loading of the tasks...</h1>
-        </Col>
+        
         </>
     );
 
@@ -94,21 +156,54 @@ function MissingPage(){
 
 // LOCAL COMPONENTS
 
+function MemeRow(props){
+    const meme = props.meme;
+
+    return(
+        <>
+        
+        <Row>
+        
+        <Col xs = {{ span: 2, offset: 0 }}>
+            <Link to= {`/memes/`+meme.id}>{meme.title}</Link>
+        </Col>
+        <Col xs = {{span: 1, offset: 0}}>
+            {meme.c_name}
+        </Col>
+        <Col xs = {{span: 1, offset: 0}}>
+
+        </Col>
+        <Col xs = {{ span: 3, offset: 0 }}>
+            {images[meme.imageId].name}
+        </Col>
+        <Col xs = {{span: 4, offset : 0}}>
+            {fonts[meme.font]}
+        </Col>
+
+        <Col xs ={{span: 1, offset : 0}} >
+            <>{meme.visibility ? <PersonSquare/> : <></>}</>
+        </Col>
+
+        </Row>
+        
+        <Dropdown.Divider/>
+        </>
+    );
+
+}
+
 function MemeComponent(props){
     const meme = props.item;
+    const image = images[meme.imageId];;
     const writings = meme.fields;
-    const positionings = meme.image.positionings;
+    const positionings = images[meme.imageId].positionings;
 
     let styles = [];
     let background = "";
     let color = "";
-    let font = "";
+    let font = fonts[meme.font];
 
-    if(meme.font === 1){
-        font = '"Times New Roman", Times, Serif';
-    }else{
-        font = 'Arial, Helvetica, sans-serif';
-    }
+    
 
     switch(meme.color){
         case 0:
