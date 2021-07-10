@@ -74,6 +74,29 @@ async function logout(){
     }
   }
 
+  async function LoadCreators(){
+    const response = await fetch(url + "/api/creators", {
+      method : "GET",
+      headers : {
+        'Content-Type' : 'application/json',
+      },
+    
+    } );
+
+    if(response.ok){
+      const creators = await response.json();
+      return creators;
+    }else {
+      try {
+        const errDetail = await response.json();
+        throw errDetail.message;
+      }
+      catch(err) {
+        throw err;
+      }
+    }
+  }
+
   async function LoadMemesOf(c_id){
     const response = await fetch(url + "/api/memes/" + c_id, {
       method : "GET",
@@ -105,10 +128,10 @@ async function logout(){
       },
     
     } );
+    
 
     if(response.ok){
       const meme = await response.json();
-      console.log("retrieved");
       return meme;
     }else {
       try {
@@ -120,6 +143,31 @@ async function logout(){
       }
     }
   }
+  async function RetrieveCreator(id){
+    const response = await fetch(url + "/api/retrieveCreator/" + id, {
+      method : "GET",
+      headers : {
+        'Content-Type' : 'application/json',
+      },
+    
+    } );
+    
+
+    if(response.ok){
+      const creator = await response.json();
+      return creator;
+    }else {
+      try {
+        const errDetail = await response.json();
+        throw errDetail.message;
+      }
+      catch(err) {
+        throw err;
+      }
+    }
+  }
+
+
 
   async function deleteMeme(id){
     await fetch(url + "/api/deleteMeme/" +id, {
@@ -140,7 +188,7 @@ async function addMeme(meme){
       } );
 }
   
-  const API = {login, logout, getUserInfo, addMeme, deleteMeme, RetrieveMeme, LoadMemesOf, MainLoadMemes}
+  const API = {login, logout, getUserInfo, addMeme, deleteMeme, RetrieveMeme, RetrieveCreator, LoadMemesOf, MainLoadMemes, LoadCreators}
   export default API;
 
   

@@ -113,7 +113,9 @@ function SideRow(props){
     if(props.selected === props.name){
         return(
             <>
+                <Link to = {{pathname : path}}>
                 <Button variant="success" className="filter-button" size="lg">{props.name}</Button>
+                </Link>
                 <Dropdown.Divider className="filter-divider" />
             </>
         );
@@ -139,25 +141,25 @@ function MainRoutes(props){
             <Meme.MemeCopy id = {match.params.id}/>
         }/>
 
-        <Route path = "/memes/:id" render = {({match}) =>
+        <Route exact path = "/memes/:id" render = {({match}) =>
             <Meme.MemePage id = {match.params.id}/>
         }/>
 
-        <Route path="/memes" render ={() =>
+        <Route exact path="/memes" render ={() =>
           
-          <Meme.MemeList/> 
+          <Meme.MainList/> 
         
         }/>
         
 
-        <Route path="/creators/:id" render ={({match}) =>
+        <Route exact path="/creators/:id" render ={({match}) =>
           
-          <Meme.CreatorMemes id = {match.params.id}/> 
+          <Meme.CreatorPage id = {match.params.id}/> 
         
         }/>
 
 
-        <Route path="/creators" render ={() =>
+        <Route exact path="/creators" render ={() =>
           
           <Meme.CreatorsList/> 
         
@@ -182,12 +184,12 @@ function MainRoutes(props){
         }/>
 
         <Route exact path="/"  render={()=>
-          <Meme.MemeList/> 
+          <Meme.MainList/> 
         }/>
 
-        <Route path="/" render ={() =>
+        <Route path="" render ={() =>
           
-          <Meme.MissingPage/> 
+          <></>
         
         }/>
       </Col>

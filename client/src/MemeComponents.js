@@ -1,22 +1,33 @@
 import { PersonSquare } from 'react-bootstrap-icons';
 import {Col,Row, Figure, Image, Button, Dropdown} from 'react-bootstrap';
-import {useState, useEffect} from 'react' ;
+import {useState, useEffect, useContext} from 'react' ;
 import {ImagesData} from './Meme.js';
 import API from './API.js';
 import {  Link} from 'react-router-dom';
+import {UserContext} from './Contexts';
 
 const images = ImagesData;
 const fonts = ['Arial, Helvetica, sans-serif', '"Times New Roman", Times, Serif', ];
 
-function MemeList(props){
-    let [memes, setMemes] = useState([]);
+function MainList(){
+    return(
+        <>
+            <h1 className = "memehead"><strong>List of all memes </strong></h1>
+            <MemeList/>
+        </>
+    );
+}
+
+
+function CreatorsList(props){
+    let [creators, setCreators] = useState([]);
 
     let [loading, setLoading] = useState(true);
 
     //fetch the memes (visibility handled on serverside)
     useEffect(() => {
-        API.MainLoadMemes().then(memelist => {
-          setMemes(memelist);
+        API.LoadCreators().then(creatorslist => {
+          setCreators(creatorslist);
           setLoading(false);
         }).catch(err =>{
           setLoading(false);
@@ -37,7 +48,185 @@ function MemeList(props){
         return(
             <>
             
-            <h1 className = "memehead"><strong>List of all memes </strong></h1>
+            <h1 className = "memehead"><strong>List of all creators</strong></h1>
+            <Dropdown.Divider/>
+            
+            {
+              creators.map((c) => 
+                  <div key = {c.c_id}>
+                  <Row>
+                  <Col>
+                    <Link to = {"/creators/" + c.c_id}>{c.username}</Link>
+                  </Col>
+                  </Row>
+                  <Dropdown.Divider/>
+                  </div>
+                  )
+            }
+        
+            </>
+    
+        );
+      }
+
+}
+
+function MemePage(props){
+    const userC = useContext(UserContext);
+    let [meme, setMeme] = useState();
+
+    let [loading, setLoading] = useState(true);
+
+    
+    //fetch the memes (visibility handled on serverside)
+    useEffect(() => {
+        API.RetrieveMeme(props.id).then(memeret => {
+          setMeme(memeret);
+          setLoading(false);
+        }).catch(err =>{
+          setLoading(false);
+        });
+      },[props.id]);
+
+    if(loading === true){
+        return(
+            <>
+                <h1> loading the page </h1>
+            </>
+        );
+    }else if(meme ===undefined){
+        return(
+            <>
+                <MissingPage/>
+            </>
+        );
+    }else{
+        return(
+            <>
+                <h1><strong>{meme.title}</strong> by <strong>{meme.c_name}</strong></h1>
+                <MemeComponent item = {meme}/>
+                <>{userC.loggedIn ? <CopyButton/> : <></>}</>
+            </>
+        );
+    }
+}
+
+
+
+function CreatorPage(props){
+    let [creator, setCreator] = useState();
+
+    let [loading, setLoading] = useState(true);
+
+    
+    //fetch the memes (visibility handled on serverside)
+    useEffect(() => {
+        API.RetrieveCreator(props.id).then(creatorInfo => {
+          setCreator(creatorInfo);
+          setLoading(false);
+        }).catch(err =>{
+          setLoading(false);
+        });
+      },[props.id]);
+
+    if(loading === true){
+        return(
+            <>
+                <h1> loading the page </h1>
+            </>
+        );
+    }else if(creator ===undefined){
+        return(
+            <>
+                <MissingPage/>
+            </>
+        );
+    }else{
+        return(
+            <>
+                <h1 className = "memehead"><strong>List of all memes from {creator.username} </strong></h1>
+                <MemeList creatorId = {creator.id}/>
+            </>
+        );
+    }
+}
+
+function ImageList(props){
+    
+
+
+    
+    return(
+        <>
+        
+            <h1>Please wait for loading of the tasks...</h1>
+        
+        </>
+    );
+
+}
+
+function MemeCopy(props){
+    return(
+        <>
+        </>
+    );
+
+}
+
+function MissingPage(){
+    return(
+        <>
+        <h1>Page doesn't exitst or you have not permission to view it</h1>
+        </>
+    );    
+}
+
+// LOCAL COMPONENTS
+
+//i'm using this component to show a list of memes, either all memes, memes from one creator, public or protected
+function MemeList(props){
+    let [memes, setMemes] = useState([]);
+    let [loading, setLoading] = useState(true);
+
+    
+
+    //fetch the memes (visibility handled on serverside)
+    useEffect(() => {
+        if(props.creatorId === undefined){
+            API.MainLoadMemes().then(memelist => {
+                setMemes(memelist);
+                setLoading(false);
+            }).catch(err =>{
+                setLoading(false);
+                setMemes([]);
+            });
+        }else{
+            API.LoadMemesOf(props.creatorId).then(memelist => {
+                setMemes(memelist);
+                setLoading(false);
+            }).catch(err =>{
+                console.log("caught!")
+                setLoading(false);
+                setMemes([]);
+            });
+        }
+        
+      },[props.creatorId]);
+
+      if(loading){
+        return(
+          <>
+          
+            <h1>Please wait for loading of the memes...</h1>
+          
+          </>
+        );
+      }else{
+        
+      
+        return(
+            <>
             
             <Row>
                 <Col xs = {{ span: 2, offset: 0 }}>
@@ -73,88 +262,6 @@ function MemeList(props){
 
 }
 
-function CreatorsList(props){
-    return(
-        <>
-        </>
-    );
-
-}
-
-function MemePage(props){
-    
-    let [meme, setMeme] = useState();
-
-    let [loading, setLoading] = useState(true);
-
-    //fetch the memes (visibility handled on serverside)
-    useEffect(() => {
-        console.log("hello");
-        API.RetrieveMeme(props.id).then(memeret => {
-          setMeme(memeret);
-          setLoading(false);
-        }).catch(err =>{
-          setLoading(false);
-        });
-      },[]);
-
-    if(loading === true){
-        return(
-            <>
-                <h1> loading the page </h1>
-            </>
-        );
-    }else{
-        return(
-            <>
-                <h1><strong>{meme.title}</strong> by <strong>{meme.c_name}</strong></h1>
-                <MemeComponent item = {meme}/>
-            </>
-        );
-    }
-}
-
-
-
-function CreatorMemes(props){
-    return(
-        <>
-        </>
-    );
-
-}
-
-function ImageList(props){
-    
-
-
-    
-    return(
-        <>
-        
-            <h1>Please wait for loading of the tasks...</h1>
-        
-        </>
-    );
-
-}
-
-function MemeCopy(props){
-    return(
-        <>
-        </>
-    );
-
-}
-
-function MissingPage(){
-    return(
-        <>
-        </>
-    );    
-}
-
-// LOCAL COMPONENTS
 
 function MemeRow(props){
     const meme = props.meme;
@@ -194,7 +301,7 @@ function MemeRow(props){
 
 function MemeComponent(props){
     const meme = props.item;
-    const image = images[meme.imageId];;
+    const image = images[meme.imageId];
     const writings = meme.fields;
     const positionings = images[meme.imageId].positionings;
 
@@ -227,31 +334,31 @@ function MemeComponent(props){
     }
 
     positionings.map((p) => styles.push({
-        "word-wrap" : "break-word",
+        "wordWrap" : "break-word",
         overflow : "hidden",
-        "text-overflow" : "ellipsis",
-        "font-family" : font,
-        "background-color" : background,
-        "text-align" : "center",
-        "margin-left" : meme.image.w_size,
-        "margin-right": meme.image.w_size,
+        "textOverflow" : "ellipsis",
+        "fontFamily" : font,
+        "backgroundColor" : background,
+        "textAlign" : "center",
+        "marginLeft" : image.w_size,
+        "marginRight": image.w_size,
 
         color : color,
         position: "relative",
         top: p.top,
         left: p.left,
-        "z-index": 1030
+        "zIndex": 1030
     }))
     return(
         <>
     
-            <Image src = {props.item.image.location} className = "meme-image" width = {meme.image.width}/>
+            <Image src = {image.location} className = "meme-image" width = {image.width}/>
             
             {
              writings.map((w, i) => <WritingComponent style = {styles[i]} key ={i} writing = {w} />)
             }
             
-            <CopyButton/>
+            
         </>
     );
 }
@@ -260,7 +367,7 @@ const WritingComponent = (props) =>{
     return(
         <>
             
-            <Figure.Caption style = {props.style} class = "text-break">
+            <Figure.Caption style = {props.style} className = "text-break">
                 
                 
                     {props.writing}
@@ -283,6 +390,6 @@ function CopyButton(props){
 
 }
 
-const Meme = {MemeList, CreatorsList, CreatorMemes, MemePage, ImageList, MemeCopy, MissingPage};
+const Meme = {MainList, CreatorsList, CreatorPage, MemePage, ImageList, MemeCopy, MissingPage};
 
 export default Meme;

@@ -188,6 +188,26 @@ exports.getMeme = (memeId, loggedIn) => {
   });
 };
 
+//fetch info for a creator
+exports.getCreator = (creatorId) => {
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT * FROM CREATORS WHERE c_id=?';
+
+    db.get(sql, [creatorId], (err, row) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      if (row == undefined) {
+        reject({error: 'Creator not found'});
+      } else {
+        const creator = { id: row.c_id, username : row.username };
+        resolve(creator);
+      }
+    });
+  });
+};
+
 //fetch textfields of a meme
 exports.getFields = (memeId) => {
     return new Promise((resolve, reject) => {

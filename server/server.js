@@ -190,6 +190,20 @@ app.get('/api/retrieveMeme/:id', async (req, res) => {
 
 });
 
+app.get('/api/retrieveCreator/:id', async (req, res) => {
+  const id = req.params.id;
+  try {
+      let creator = await dao.getCreator(id);
+      
+
+      res.json(creator);
+  } catch (error) {
+      console.log(error);
+      res.status(500).json(error);
+  }
+
+});
+
 app.get('/api/session', isLoggedIn, (req, res) =>{
   if(req.isAuthenticated)
       res.status(200).json(req.user);
