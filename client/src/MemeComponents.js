@@ -3,8 +3,9 @@ import {Col,Row, Figure, Image, Button, Dropdown} from 'react-bootstrap';
 import {useState, useEffect, useContext} from 'react' ;
 import {ImagesData} from './Meme.js';
 import API from './API.js';
-import {  Link} from 'react-router-dom';
-import {UserContext} from './Contexts';
+import {  Link, Redirect} from 'react-router-dom';
+import {UserContext} from './Contexts.js';
+import {CreateModal, ConfirmModal, CopyModal} from './Modals.js'
 
 const images = ImagesData;
 const fonts = ['Arial, Helvetica, sans-serif', '"Times New Roman", Times, Serif', ];
@@ -71,12 +72,29 @@ function CreatorsList(props){
 
 }
 
+//from here we take care of visualizing, copying and deleting a meme from all cases (logged/not logged, owner/not owner)
 function MemePage(props){
     const userC = useContext(UserContext);
     let [meme, setMeme] = useState();
 
     let [loading, setLoading] = useState(true);
 
+    let [copyMeme, setCopyMeme] = useState(undefined);
+    //modal for copy
+    const [showC, setShowC] = useState(false);
+    const handleCloseC = () => setShowC(false);
+    const handleShowC = () => setShowC(true);
+
+    //modal for deleting
+    const [showD, setShowD] = useState(false);
+    const handleCloseD = () => {
+        setShowD(false);
+        API.deleteMeme(meme.id);
+    }
+    const handleShowD = () => setShowD(true);
+    
+    
+    
     
     //fetch the memes (visibility handled on serverside)
     useEffect(() => {
@@ -87,13 +105,14 @@ function MemePage(props){
           setLoading(false);
         });
       },[props.id]);
-
+    //waiting for server response
     if(loading === true){
         return(
             <>
                 <h1> loading the page </h1>
             </>
         );
+        //the meme does not exist!
     }else if(meme ===undefined){
         return(
             <>
@@ -101,16 +120,91 @@ function MemePage(props){
             </>
         );
     }else{
+        //we compiled the modal for a copy and succeded (redirect to preview)
+        if(copyMeme !== undefined){
+            <Redirect to ={{
+                pathname : "/create/preview",
+                //why am i not just passing meme state? Because it gives problems ("object could not be cloned")
+                state : {meme : {title : copyMeme.title,imageId : copyMeme.imageId, fields : copyMeme.fields, 
+                     visibility: copyMeme.visibility, font : copyMeme.font, color : copyMeme.color}}
+             }
+                 } />
+        }
+        //meme exists and we didn't try to copy it (yet). We visualize the copy and delete buttons accordingly to logged user
         return(
             <>
                 <h1><strong>{meme.title}</strong> by <strong>{meme.c_name}</strong></h1>
                 <MemeComponent item = {meme}/>
-                <>{userC.loggedIn ? <CopyButton/> : <></>}</>
+                <>{userC.loggedIn ? 
+                    <>{userC.userInfo.c_id === meme.c_id ? 
+                            <>
+                            <GenericButton variant = "success" task = {() => handleShowC()} text = "Copy"/>
+                            <GenericButton variant = "secondary" task = {() => handleShowD()} text = "Delete"/>
+
+                            <ConfirmModal show = {showD} title = "Are you sure?" 
+                            msg = "Meme will be deleted and you will be directed to main page" btnmsg = "Yes" handleClose = {handleCloseD}/>
+                            
+                            <CopyModal show = {showC} image = {images[meme.imageId]} 
+                            owner = {userC.userInfo.c_id === meme.c_id} copied = {meme} handleClose = {handleCloseC} 
+                            goPreview = {(createdcopy)=>{setCopyMeme(createdcopy); handleCloseC()}}/>
+                            </>
+                        :
+                            <>
+                                <GenericButton variant = "success" task = {() => handleShowC()} text = "Copy"/>
+
+                            <CopyModal show = {showC} image = {images[meme.imageId]} 
+                            owner = {userC.userInfo.c_id === meme.c_id} copied = {meme} handleClose = {handleCloseC} 
+                            goPreview = {(createdcopy)=>{setCopyMeme(createdcopy); handleCloseC()}}/>
+                            </>
+                        
+                        
+                    }</>
+                
+                : 
+                    <>
+                    </>
+                }</>
             </>
         );
     }
 }
 
+function PreviewPage(props){
+    let meme = props.meme;
+
+    let [show, setShow] = useState(false);
+    let [modalTitle, setModalTitle] = useState("");
+    let [modalMsg, setModalMsg] = useState("");
+
+    const handleClose = () => {
+        setShow(false);
+        
+    };
+
+    function submitMeme(meme) {
+        API.addMeme(meme).then(()=>{
+            setModalTitle("Success!");
+            setModalMsg("Meme created successfully!");
+            setShow(true);
+        }).catch(() =>{
+            setModalTitle("Ooops!");
+            setModalMsg("Something went wrong...");
+            setShow(true);
+        });
+      }
+   
+    return(
+        <>
+                <h1><strong>Preview for {meme.title}</strong></h1>
+                <MemeComponent item = {meme}/>
+                <Button type="button" className="fixed-right-bottom" size="lg" variant="success" onClick = {() => submitMeme(props.meme)}>
+                    Confirm
+                </Button>
+                <ConfirmModal show = {show} title={modalTitle} msg = {modalMsg} btnmsg = "Go To Main Page" handleClose = {handleClose}/>
+
+        </>
+    );
+}
 
 
 function CreatorPage(props){
@@ -152,17 +246,41 @@ function CreatorPage(props){
 }
 
 function ImageList(props){
-    
+    const [show, setShow] = useState(false);
 
-
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
     
+    let [meme, setMeme] = useState(undefined);
+    let [selectedImage, setSelectedImage] = useState(0);
+    
+    if(meme === undefined){
     return(
         <>
         
-            <h1>Please wait for loading of the tasks...</h1>
+            <h1><strong>As a first step, select an image as a base for your meme:</strong></h1>
+            <Dropdown.Divider/>
+            {
+              images.map((i) => <ImageComponent image = {i} key ={i.id} selectImage = {(id) => {setSelectedImage(id); handleShow()}}/>)
+            }
+            <CreateModal image = {images[selectedImage]} show = {show} handleClose = {handleClose} goPreview={(createdmeme) => {setMeme(createdmeme); handleClose()}}/>
         
         </>
     );
+    }else{
+        return(
+            <>
+
+                <Redirect to ={{
+                   pathname : "/create/preview",
+                   //why am i not just passing meme state? Because it gives problems ("object could not be cloned")
+                   state : {meme : {title : meme.title,imageId : meme.imageId, fields : meme.fields, 
+                        visibility: meme.visibility, font : meme.font, color : meme.color}}
+                }
+                    } />
+            </>
+        );
+    }
 
 }
 
@@ -206,7 +324,6 @@ function MemeList(props){
                 setMemes(memelist);
                 setLoading(false);
             }).catch(err =>{
-                console.log("caught!")
                 setLoading(false);
                 setMemes([]);
             });
@@ -379,17 +496,37 @@ const WritingComponent = (props) =>{
     );
 }
 
-function CopyButton(props){
+function ImageComponent(props){
+    const image = props.image;
+
     return(
         <>
-            <Button type="button" className="fixed-right-bottom" size="lg" variant="success">
-                Copy
+            <h2>{image.name}</h2>
+            <Image src = {image.location} className = "meme-image" width = {image.width}/>
+            <SelectButton id = {image.id} selectImage = {props.selectImage}/>
+            <Dropdown.Divider/>
+        </>
+    );
+}
+
+function SelectButton(props){
+    return(
+        <>
+            <Button type="button" className="relative-right-bottom" size="lg" variant="success" onClick={() => props.selectImage(props.id)}>
+                Select
             </Button>
         </>
     );
-
 }
 
-const Meme = {MainList, CreatorsList, CreatorPage, MemePage, ImageList, MemeCopy, MissingPage};
+
+
+function GenericButton(props){
+    <Button type="button" className="fixed-right-bottom" size="lg" variant={props.variant} onClick={() => props.task()}>
+                {props.text}
+    </Button>
+}
+
+const Meme = {MainList, CreatorsList, CreatorPage, MemePage, ImageList, MemeCopy, MissingPage, PreviewPage};
 
 export default Meme;

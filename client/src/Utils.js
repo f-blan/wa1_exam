@@ -92,7 +92,7 @@ function MemeSide(props){
             <>{user.loggedIn ?
             <>
                 <SideRow selected = {selected} linkTo = {my_path} name = "My memes" setSelected = {props.setSelected}/>
-                <SideRow selected = {selected} linkTo = {my_path} name = "Create a meme" setSelected = {props.setSelected}/>                
+                <SideRow selected = {selected} linkTo = "/create" name = "Create a meme" setSelected = {props.setSelected}/>                
             </>
             :
             <> 
@@ -137,9 +137,7 @@ function MainRoutes(props){
     return(
       <>
         <Col xs = {12} md={7} className="tasks">
-        <Route path = "/memes/:id/copy" render = {({match}) =>
-            <Meme.MemeCopy id = {match.params.id}/>
-        }/>
+        
 
         <Route exact path = "/memes/:id" render = {({match}) =>
             <Meme.MemePage id = {match.params.id}/>
@@ -165,15 +163,28 @@ function MainRoutes(props){
         
         }/>
 
-        <Route path = "/create/:id" render = {({match}) =>
+        <Route path = "/create/preview" render = {({location}) =>
     
-            <Meme.MemeCreate id = {match.params.id}/>
+          
+          <>{user.loggedIn ? 
+            <>{location.state ?
+              <Meme.PreviewPage meme = {location.state.meme}/> 
+              :
+              <Redirect to = "/"/>
+            }</>
+            : 
+            
+              <Redirect to ="/" />}</>
+
 
         }/>
 
         <Route path="/create" render ={() =>
           
-          <Meme.ImageList/> 
+
+          
+            <>{user.loggedIn ? <Meme.ImageList/> : <Redirect to ="/" />}</>
+          
         
         }/>
 
