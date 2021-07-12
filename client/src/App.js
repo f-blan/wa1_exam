@@ -39,7 +39,7 @@ function App() {
       <>{loading ? <h1> loading the page </h1> 
       :
         
-      <MemeBody doLogout = {doLogout}/>
+      <MemeBody doLogout = {doLogout} loading = {loading}/>
       }</>  
         
         </UserContext.Provider>

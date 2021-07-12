@@ -13,7 +13,7 @@ GET http://localhost:3001/api/retrieveMeme/24
 ###
 
 
-GET http://localhost:3001/api/retrieveCreator/19
+GET http://localhost:3001/api/retrieveCreator/1
 
 ###
 

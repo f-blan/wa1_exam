@@ -1,7 +1,7 @@
 import { PersonSquare } from 'react-bootstrap-icons';
 import {Col,Row, Figure, Image, Button, Dropdown} from 'react-bootstrap';
 import {useState, useEffect, useContext} from 'react' ;
-import {ImagesData} from './Meme.js';
+import {ImagesData, SupportPictures} from './Meme.js';
 import API from './API.js';
 import {  Link, Redirect} from 'react-router-dom';
 import {UserContext} from './Contexts.js';
@@ -9,7 +9,7 @@ import {CreateModal, ConfirmModal, CopyModal} from './Modals.js'
 
 const images = ImagesData;
 const fonts = ['Arial, Helvetica, sans-serif', '"Times New Roman", Times, Serif', ];
-
+const supps = SupportPictures;
 function MainList(){
     return(
         <>
@@ -56,11 +56,17 @@ function CreatorsList(props){
               creators.map((c) => 
                   <div key = {c.c_id}>
                   <Row>
-                  <Col>
-                    <Link to = {"/creators/" + c.c_id}>{c.username}</Link>
-                  </Col>
-                  </Row>
-                  <Dropdown.Divider/>
+                    <Col xs = {{span : 1, offset : 1}}>
+                        <Image src = {supps[c.pfp_id].location} style = {{width: 40, height: 40, borderRadius : 20}}/>
+                    </Col>
+                    <Col xs = {{span : 2, offset : 0}}>
+                        <Link to = {"/creators/" + c.c_id}>{c.username}</Link>
+                    </Col>
+                    <Col xs = {{span : 7, offset : 1}}>
+                        {c.quote}
+                    </Col>
+                    </Row>
+                    <Dropdown.Divider/>
                   </div>
                   )
             }
@@ -94,8 +100,6 @@ function MemePage(props){
     const handleShowD = () => setShowD(true);
     
     
-    
-    
     //fetch the memes (visibility handled on serverside)
     useEffect(() => {
         API.RetrieveMeme(props.id).then(memeret => {
@@ -116,12 +120,14 @@ function MemePage(props){
     }else if(meme ===undefined){
         return(
             <>
-                <MissingPage/>
+                <MissingPage show = {true}/>
             </>
         );
     }else{
         //we compiled the modal for a copy and succeded (redirect to preview)
+        
         if(copyMeme !== undefined){
+            return(
             <Redirect to ={{
                 pathname : "/create/preview",
                 //why am i not just passing meme state? Because it gives problems ("object could not be cloned")
@@ -129,29 +135,40 @@ function MemePage(props){
                      visibility: copyMeme.visibility, font : copyMeme.font, color : copyMeme.color}}
              }
                  } />
-        }
+            );
+        }else{
         //meme exists and we didn't try to copy it (yet). We visualize the copy and delete buttons accordingly to logged user
         return(
             <>
                 <h1><strong>{meme.title}</strong> by <strong>{meme.c_name}</strong></h1>
                 <MemeComponent item = {meme}/>
                 <>{userC.loggedIn ? 
-                    <>{userC.userInfo.c_id === meme.c_id ? 
+                    <>{userC.userInfo.id === meme.c_id ? 
                             <>
-                            <GenericButton variant = "success" task = {() => handleShowC()} text = "Copy"/>
-                            <GenericButton variant = "secondary" task = {() => handleShowD()} text = "Delete"/>
-
+                            <Row className= "buttonrow">
+                                <Col xs = {{span : 1, offset : 8}}>
+                                    <GenericButton variant = "secondary" task = {() => handleShowD()} text = "Delete"/>
+                                </Col>
+                                <Col xs = {{span : 1, offset : 1}}>
+                                    <GenericButton variant = "success" task = {() => handleShowC()} text = "Copy"/>
+                                </Col>
+                            
+                            </Row>
                             <ConfirmModal show = {showD} title = "Are you sure?" 
                             msg = "Meme will be deleted and you will be directed to main page" btnmsg = "Yes" handleClose = {handleCloseD}/>
                             
+                            
                             <CopyModal show = {showC} image = {images[meme.imageId]} 
-                            owner = {userC.userInfo.c_id === meme.c_id} copied = {meme} handleClose = {handleCloseC} 
+                            owner = {userC.userInfo.id === meme.c_id} copied = {meme} handleClose = {handleCloseC} 
                             goPreview = {(createdcopy)=>{setCopyMeme(createdcopy); handleCloseC()}}/>
                             </>
                         :
                             <>
+                                <Row className= "buttonrow">
+                                    <Col xs = {{span:1, offset: 9}}>
                                 <GenericButton variant = "success" task = {() => handleShowC()} text = "Copy"/>
-
+                                </Col>
+                                </Row>
                             <CopyModal show = {showC} image = {images[meme.imageId]} 
                             owner = {userC.userInfo.c_id === meme.c_id} copied = {meme} handleClose = {handleCloseC} 
                             goPreview = {(createdcopy)=>{setCopyMeme(createdcopy); handleCloseC()}}/>
@@ -162,10 +179,12 @@ function MemePage(props){
                 
                 : 
                     <>
+                    
                     </>
                 }</>
             </>
         );
+        }
     }
 }
 
@@ -197,9 +216,13 @@ function PreviewPage(props){
         <>
                 <h1><strong>Preview for {meme.title}</strong></h1>
                 <MemeComponent item = {meme}/>
-                <Button type="button" className="fixed-right-bottom" size="lg" variant="success" onClick = {() => submitMeme(props.meme)}>
+                <Row className = "buttonrow">
+                <Col xs = {{span : 1, offset : 9}}>
+                <Button type="button" className="relative-right-bottom" size="lg" variant="success" onClick = {() => submitMeme(props.meme)}>
                     Confirm
                 </Button>
+                </Col>
+                </Row>
                 <ConfirmModal show = {show} title={modalTitle} msg = {modalMsg} btnmsg = "Go To Main Page" handleClose = {handleClose}/>
 
         </>
@@ -232,13 +255,25 @@ function CreatorPage(props){
     }else if(creator ===undefined){
         return(
             <>
-                <MissingPage/>
+                <MissingPage show={true}/>
             </>
         );
     }else{
+        const image = supps[creator.pfp_id];
         return(
             <>
-                <h1 className = "memehead"><strong>List of all memes from {creator.username} </strong></h1>
+                <h1><strong>{creator.username}</strong>'s profile</h1>
+                <Row>
+                    <Col xs = {{span : 6, offset : 0}}>
+                    <Image src = {image.location} style = {{width: 400, height: 400, borderRadius : 200}}/>
+                    </Col>
+                    <Col xs = {{span : 6, offset : 0}}>
+                        <h3>Quote:</h3>
+                        <span>{creator.quote}</span>
+                    </Col>
+
+                </Row>
+                <h2 className = "memehead"><strong>List of all memes from {creator.username} </strong></h2>
                 <MemeList creatorId = {creator.id}/>
             </>
         );
@@ -292,12 +327,31 @@ function MemeCopy(props){
 
 }
 
-function MissingPage(){
+function MissingPage(props){
+    const image = supps[4];
+    if(props.show === true){
     return(
         <>
-        <h1>Page doesn't exitst or you have not permission to view it</h1>
+        <h1>Welp!</h1>
+        <Row>
+                    <Col xs = {{span : 6, offset : 3}}>
+                    <Image src = {image.location} style = {{width: 400, height: 400}}/>
+                    </Col>
+                    
+
+        </Row>
+        <Row>
+        <h2>Looks like this page does not exist, or you cannot view its content</h2>    
+        </Row>
+        
         </>
-    );    
+    );
+    }else{
+        return(
+            <>
+            </>
+        );
+    }
 }
 
 // LOCAL COMPONENTS
@@ -440,9 +494,11 @@ function MemeComponent(props){
             break;
         case 2:
             color = "green";
+            background = "white";
             break;
         case 3:
             color = "blue";
+            background = "white";
             break;
         default:
             background = "black";
@@ -459,7 +515,8 @@ function MemeComponent(props){
         "textAlign" : "center",
         "marginLeft" : image.w_size,
         "marginRight": image.w_size,
-
+        
+        "fontSize" : image.f_size,
         color : color,
         position: "relative",
         top: p.top,
@@ -469,11 +526,11 @@ function MemeComponent(props){
     return(
         <>
     
-            <Image src = {image.location} className = "meme-image" width = {image.width}/>
             
             {
              writings.map((w, i) => <WritingComponent style = {styles[i]} key ={i} writing = {w} />)
             }
+            <Image src = {image.location} className = "meme-image" width = {image.width}/>
             
             
         </>
@@ -522,9 +579,11 @@ function SelectButton(props){
 
 
 function GenericButton(props){
-    <Button type="button" className="fixed-right-bottom" size="lg" variant={props.variant} onClick={() => props.task()}>
+    return(
+        <Button type="button" className= "relative-right-bottom" size="lg" variant={props.variant} onClick={() => props.task()}>
                 {props.text}
-    </Button>
+        </Button>
+    );
 }
 
 const Meme = {MainList, CreatorsList, CreatorPage, MemePage, ImageList, MemeCopy, MissingPage, PreviewPage};

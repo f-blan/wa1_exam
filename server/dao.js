@@ -85,7 +85,7 @@ exports.CreatorMemes = (loggedIn, c_id) => {
 //list of creators
 exports.CreatorsList = () => {
     return new Promise((resolve, reject) => {
-      const sql = 'select c_id, username from CREATORS';
+      const sql = 'select * from CREATORS';
 
       db.all(sql, [], (err, rows) => {
         if (err) {
@@ -93,7 +93,7 @@ exports.CreatorsList = () => {
           return;
         }
         const creators = rows.map((e) => ({
-             c_id: e.c_id, username: e.username
+             c_id: e.c_id, username: e.username, pfp_id : e.pfp_id, quote : e.quote
           }));
         resolve(creators);
       });
@@ -201,7 +201,7 @@ exports.getCreator = (creatorId) => {
       if (row == undefined) {
         reject({error: 'Creator not found'});
       } else {
-        const creator = { id: row.c_id, username : row.username };
+        const creator = { id: row.c_id, username : row.username , pfp_id : row.pfp_id, quote : row.quote};
         resolve(creator);
       }
     });

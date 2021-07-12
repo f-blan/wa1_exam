@@ -1,9 +1,9 @@
-# Exam #1234: "Exam Title"
-## Student: s123456 LASTNAME FIRSTNAME 
+# Exam #2: "Meme Generator"
+## Student: s288265 Blangiardi Francesco 
 
 ## React Client Application Routes
 
-- Route `/`: page content and purpose
+- Route `/`: main page, displays all visible memes (as specified by exam paper)
 - Route `/something/:param`: page content and purpose, param specification
 - ...
 
