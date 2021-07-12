@@ -40,7 +40,7 @@ Content-Type: application/json
 
 ###
 
-DELETE  http://localhost:3001/api/deleteMeme/25
+DELETE  http://localhost:3001/api/deleteMeme/10000
 
 ###
 

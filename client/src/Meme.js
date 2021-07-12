@@ -95,33 +95,5 @@ function Image(id, name,location,width, n_fields, max_lengths, positionings, w_s
   const SupportPictures = pfp_create();
 
 
-//------------------------------TEMPLATE MEMES (for testing purposes)---------------------------------------
-    const images = ImagesData;    
 
-
-    let fields1 = ["hi", "hey", "fuck you maderglabberaaaaaaaaa"];
-    let meme1 = new MemeClass(1, "Title", images[0], fields1, 0, 1, 0, 1, "aasd" );
-
-    let fields2 = ["the woman", "me myselfaaaaa asd asd asd asd asd asd asd asd asd sd asd asd "]
-    let meme2 = new MemeClass(2, "Title2", images[1], fields2,0,1,1, 1, "asd");
-
-    let fields3 = ["me being happy, very very happy asd asd asd asd asd asd asd asd asd asd ", 
-    "no being happy, not very happy asd asd asd asd asd as dads asd asd "];
-    let meme3 = new MemeClass(3, "Title3", images[2], fields3, 0, 0, 1,"asd",1);
-
-    let fields4 = ["when asd asd asd asd asd asd asd asd asd asdd", "asda asd asd asd asd asd sad sad asd "];
-    let meme4 = new MemeClass(4,"Title4", images[3], fields4, 0, 1,1, "asd",1  );
-
-    let fields5 = ["me and the boys copying code from biglab2 sad asd asd asd asd sda asd dsa sad asd sad asd "];
-    let meme5 = new MemeClass(5, "Title5", images[4], fields5, 0, 0, 1, "asd", 2);
-
-    let fields6 = ["panino con la carne di cavallo asdas asd", "panino con la salsiccia asd asd asd ", "Peppino l'arrostitore tenebroso"];
-    let meme6 = new MemeClass(6, "Title6", images[5], fields6, 0, 1, 3,"asd",1);
-
-    let fields7 = ["quando asd asd asd sad das sad das sad sa sa sa sa sad dss da sd s ad  s ad sadsadsads ad sa d sadsad sada dsa wodjsof oasihf io oawifb sa pifhsa pfh fpsaohf pksah dophfdk pah"];
-    let meme7 = new MemeClass(7, "tutke6", images[6], fields7, 0,1,1,"sad",1);
-
-    const memearray = [meme1, meme2,meme3,meme4,meme5,meme6,meme7]
-//
-
-  export {Image, MemeClass, SupportPictures, ImagesData, memearray};
+  export {Image, MemeClass, SupportPictures, ImagesData};
