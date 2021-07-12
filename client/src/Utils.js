@@ -1,4 +1,3 @@
-import React from 'react';
 import {Col,Row, Navbar, Form, Button,Dropdown, Container, Image} from 'react-bootstrap';
 import { EmojiWink, PersonCircle } from 'react-bootstrap-icons';
 import { Route, Switch, Link, Redirect} from 'react-router-dom';
@@ -14,19 +13,19 @@ function MemeBody(props){
     
 
     let [selected, setSelected] = useState("Memes");
-  
+
+    
     return(
         <>
           <Container fluid>
             <MemeNav logout = {props.doLogout} loading = {props.loading}/>
             <Row>
             <MemeSide selected = {selected} setSelected = {setSelected} logout = {props.doLogout}/>
-            <Switch>
 
              
-            <MainRoutes/>
+            <MainRoutes setSelected = {setSelected}/>
   
-            </Switch>
+            
             </Row>
           </Container>
         </>
@@ -155,7 +154,7 @@ function MainRoutes(props){
         <Route exact path = "/memes/:id" render = {({match}) =>{
             
             return(
-            <Meme.MemePage id = {match.params.id}/>
+            <Meme.MemePage id = {match.params.id} setSelected = {props.setSelected}/>
             );
         }
         }/>
@@ -191,7 +190,7 @@ function MainRoutes(props){
           return(
           <>{user.loggedIn ? 
             <>{location.state ?
-              <Meme.PreviewPage meme = {location.state.meme}/> 
+              <Meme.PreviewPage meme = {location.state.meme} setSelected = {props.setSelected}/> 
               :
               <Redirect to = "/"/>
             }</>

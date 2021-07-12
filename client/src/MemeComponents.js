@@ -179,7 +179,15 @@ function MemePage(props){
                 
                 : 
                     <>
-                    
+                    <Row className= "buttonrow">
+                        <Col xs = {{span:2, offset: 9}}>
+                            <Link to = "/">
+                                <Button variant = "success" className = "relative-right-bottom" size="lg" onClick = {() => props.setSelected("Memes")}>
+                                    Back
+                                </Button>
+                            </Link>
+                        </Col>
+                    </Row>
                     </>
                 }</>
             </>
@@ -218,7 +226,7 @@ function PreviewPage(props){
                 <MemeComponent item = {meme}/>
                 <Row className = "buttonrow">
                 <Col xs = {{span : 1, offset : 9}}>
-                <Button type="button" className="relative-right-bottom" size="lg" variant="success" onClick = {() => submitMeme(props.meme)}>
+                <Button type="button" className="relative-right-bottom" size="lg" variant="success" onClick = {() => {submitMeme(props.meme); props.setSelected("Memes")}}>
                     Confirm
                 </Button>
                 </Col>

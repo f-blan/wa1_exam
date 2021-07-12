@@ -7,6 +7,7 @@ import { UserContext } from './Contexts.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./App.css";
 
+
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [userInfo, setUserInfo] = useState();
@@ -39,7 +40,7 @@ function App() {
       <>{loading ? <h1> loading the page </h1> 
       :
         
-      <MemeBody doLogout = {doLogout} loading = {loading}/>
+      <MemeBody doLogout = {doLogout} loading = {loading} pathname = {window.location.pathname}/>
       }</>  
         
         </UserContext.Provider>

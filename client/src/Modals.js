@@ -168,7 +168,7 @@ function CopyModal(props){
 
         let visibility;
 
-        console.log(fArray);
+      
         if(protect){
             visibility = 1;
         }else{
