@@ -79,25 +79,25 @@
 ## Screenshot
 
 ### Create: from main select Create a Meme
-![Screenshot](./screenshots/create1.jpg)
+![Screenshot](./screenshots/create1.png)
 
 ### -> Select
-![Screenshot](./screenshots/create2.jpg)
+![Screenshot](./screenshots/create2.png)
 
 ### -> See Preview
-![Screenshot](./screenshots/create3.jpg)
+![Screenshot](./screenshots/create3.png)
 
 ### Copy: from main or /creators/:id -> click on a meme
-![Screenshot](./screenshots/copy1.jpg)
+![Screenshot](./screenshots/copy1.png)
 
 ### -> Copy
-![Screenshot](./screenshots/copy2.jpg)
+![Screenshot](./screenshots/copy2.png)
 
 ### -> See Preview
-![Screenshot](./screenshots/copy3.jpg)
+![Screenshot](./screenshots/copy3.png)
 
 ### -> Confirm
-![Screenshot](./screenshots/copy4.jpg)
+![Screenshot](./screenshots/copy4.png)
 
 
 
