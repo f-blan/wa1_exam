@@ -12,12 +12,12 @@
 - Route `/creators/:id` : profile page of creator identified by :id, displays also their (visible) memes. Default missing page if creator doesn't exist
 - Route `/create` : shows all available images. After one is selected, a modal appears where it's possible to fill the meme properties
 - Route `/create/preview` :  after /create or copy modal is submitted, you get redirected to this route where you can visualize the meme before storing it into the db. Should not be accessible in any other way (you get redirected)
--Route `/login` : simple form to login
--Route `*` : any route that doesn't match the above ones displays a default "missing page" message (should not be accessible  directly from application)
+- Route `/login` : simple form to login
+- Route `*` : any route that doesn't match the above ones displays a default "missing page" message (should not be accessible  directly from application)
 
 ## API Server
 
--GET `/api/session`
+- GET `/api/session`
   - request parameters : none
   - response body content : returns information about the logged user (id, username and profile picture id). Error message if unauthenticated
 - POST `/api/login`
