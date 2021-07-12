@@ -103,7 +103,7 @@
 
 ## Users Credentials
 
-format is <username>, <password>
+format is "username", "password"
 
 - GigaChad, asd
   - "Deadlines"
